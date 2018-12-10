@@ -1,3 +1,22 @@
+class CompilerContext {
+    constructor(context) {
+        this.context = context || [];
+        this.indent = "";
+    }
+    
+    emit(text) {
+        this.context.push(this.indent + text);
+    }
+    
+    increaseIndent() {
+        this.indent += "    ";
+    }
+    
+    decreaseIndent() {
+        this.indent -= "   ";
+    }
+}
+
 class ASTNode {
     constructor(children) {
         this.children = children || [];
@@ -22,7 +41,7 @@ class ASTNode {
     }
     
     compile(context) {
-        throw new Exception("Unimplemented compile method!");
+        throw "Unimplemented compile method!";
     }
     
     compile_children(context) {
@@ -69,9 +88,9 @@ class ClosingLoopNode {};
 class LoopNode extends ASTNode {
     compile(context) {
         context.emit("while (mem[mem_ptr] !== 0) {");
-        context.increase_indent();
+        context.increaseIndent();
         this.compile_children(context);
-        context.decrease_indent();
+        context.decreaseIndent();
         context.emit("}");
     }
 };
@@ -124,6 +143,8 @@ class Parser {
 
 const code = "++++>[[+++]]>++++";
 const parser = new Parser();
+const context = new CompilerContext();
 let tree = parser.parseFile(code);
-let render = tree.render();
-console.log(render);
+tree.compile(context);
+console.log(context.context)
+
