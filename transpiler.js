@@ -13,7 +13,7 @@ class CompilerContext {
     }
     
     decreaseIndent() {
-        this.indent -= "   ";
+        this.indent = this.indent.substring(4);
     }
 }
 
